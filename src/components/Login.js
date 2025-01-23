@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom'; // useNavigate
 
-import FormularioRegistro from './FormularioRegistro'; // Importa el componente de registro
+import FormularioRegistro from './FormularioRegistro'; //componente de registro
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,11 +12,11 @@ const Login = () => {
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false); // Estado para saber si mostrar el formulario de registro
+  const [isRegistering, setIsRegistering] = useState(false); // para saber si mostrar el formulario de registro
 
-  const navigate = useNavigate(); // Usamos useNavigate para redirigir
+  const navigate = useNavigate(); // usamos useNavigate para redirigir
 
-  // Manejar los cambios en los campos del formulario
+  // maenjo de los cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -25,26 +25,25 @@ const Login = () => {
     });
   };
 
-  // Enviar los datos del formulario
+  // enviar los datos 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');  // Limpiar cualquier error previo
+    setError('');  // Limpima todos los errores anteriores
 
     try {
-      // Aquí deberías cambiar la URL al endpoint de tu backend
       const response = await axios.post('http://localhost:5000/login', formData);
 
-      // Verifica si el nivel de acceso está presente
+
       if (response.data && response.data.nivel_acceso !== undefined) {
-        const { nivel_acceso } = response.data; // Obtén el nivel de acceso de la respuesta
+        const { nivel_acceso } = response.data; 
 
         alert('Inicio de sesión exitoso');
 
         if (nivel_acceso === 1) {
-          navigate('/dashboardAdmin');  // Redirigir al dashboard Admin
+          navigate('/dashboardAdmin');  // redirige al dashboardAdmin
         } else if (nivel_acceso === 2 || nivel_acceso === 3) {
-          navigate('/dashboard');  // Redirigir al dashboard normal
+          navigate('/dashboard');  // redirige al dashboard
         } else {
           setError('Nivel de acceso no válido');
         }
@@ -58,7 +57,7 @@ const Login = () => {
     }
   };
 
-  // Alternar entre mostrar login y registro
+  // para  mostrar login o registro
   const toggleForm = () => {
     setIsRegistering(!isRegistering);
   };
@@ -66,7 +65,7 @@ const Login = () => {
   return (
     <div>
       {isRegistering ? (
-        // Si está en el estado de registro, mostrar el formulario de registro
+  
         <FormularioRegistro />
       ) : (
         <div>

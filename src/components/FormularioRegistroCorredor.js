@@ -9,12 +9,12 @@ const RegistroEvento = () => {
   const [formData, setFormData] = useState({
     rut: '',
     id_evento: '',
-    estado_participacion: 'Inscrito', // Estado predeterminado
-    categoria: '', // Campo de categoría
+    estado_participacion: 'Inscrito', 
+    categoria: '', 
   });
   const [mensaje, setMensaje] = useState('');
 
-  // Cargar los eventos al montar el componente
+  // Carga los eventos 
   useEffect(() => {
     axios.get('http://localhost:5000/eventos')
       .then((response) => {
@@ -25,7 +25,7 @@ const RegistroEvento = () => {
       });
   }, []);
 
-  // Manejar el cambio de los campos del formulario
+  // Manejo cambio de los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -34,36 +34,36 @@ const RegistroEvento = () => {
     });
   };
 
-  // Manejar el envío del formulario
+  // manejo envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validar que el RUT no esté vacío
+    // validamops que el rut no sea vacio
     if (!formData.rut) {
       setMensaje('Por favor, ingrese un RUT.');
       return;
     }
 
-    // Validar que se haya seleccionado un evento
+    // valida seleccion
     if (!formData.id_evento) {
       setMensaje('Por favor, seleccione un evento.');
       return;
     }
 
-    // Validar que se haya seleccionado una categoría
+    // valida seleccion categoría
     if (!formData.categoria) {
       setMensaje('Por favor, seleccione una categoría.');
       return;
     }
 
-    // Enviar los datos al backend
+    // envi los datos al backend
     axios.post('http://localhost:5000/registrar-evento', formData)
       .then((response) => {
         setMensaje('Corredor registrado con exito');
       })
       .catch((error) => {
-        setMensaje(error.response ? error.response.data : 'Error al registrar participación');
-        console.error('Error al registrar participación:', error);
+        setMensaje(error.response ? error.response.data : 'Error al registrar usuario a evento');
+        console.error('Error al registrar participacion de evento:', error);
       });
   };
 

@@ -1,4 +1,3 @@
-// EventoRegistro.js
 
 import React, { useState } from 'react';
 
@@ -11,14 +10,14 @@ const EventoRegistro = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Crear objeto con los datos del formulario
+    // Creamos el objeto con los datos del formulario
     const eventoData = {
       nombre_evento: nombreEvento,
       fecha_evento: fechaEvento,
       ubicacion_evento: ubicacionEvento,
     };
 
-    // Enviar los datos al servidor utilizando fetch
+    // datos al servidor con fetch
     fetch('http://localhost:5000/guardarEvento', {
       method: 'POST',
       headers: {
@@ -31,12 +30,12 @@ const EventoRegistro = () => {
         if (data.success) {
           setMensaje('Evento registrado exitosamente');
         } else {
-          setMensaje('Hubo un error al registrar el evento');
+          setMensaje('Error registrar al evento');
         }
       })
       .catch((error) => {
         console.error('Error:', error);
-        setMensaje('Hubo un error en la solicitud');
+        setMensaje('Error en la solicitud');
       });
   };
 

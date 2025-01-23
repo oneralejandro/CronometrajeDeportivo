@@ -1,4 +1,4 @@
-// App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
@@ -9,7 +9,11 @@ import TomarTiempos from './components/TomarTiempos';
 import TomaTiempoInicio from './components/TomaTiempoInicio';
 import TomaTiempoFin from './components/TomaTiempoFin';
 import FormularioRegistroCorredor from './components/FormularioRegistroCorredor';
-import Resultadostiempos from './components/ResultadosTiempos'; // Importa Resultadostiempos
+import Resultadostiempos from './components/ResultadosTiempos';
+import EditarCorredor from './components/EditarCorredor';
+import EliminarCorredor from './components/EliminarCorredor'; 
+import EditarUsuarios from './components/EditarUsuarios'; 
+import EliminarUsuario from './components/EliminarUsuario'; 
 
 function App() {
   return (
@@ -24,9 +28,11 @@ function App() {
           <Route path="/tomar-tiempo-inicio" element={<TomaTiempoInicio />} />
           <Route path="/tomar-tiempo-fin" element={<TomaTiempoFin />} />
           <Route path="/registro-corredor" element={<FormularioRegistroCorredor />} />
-          
-          {/* Ruta para ver los resultados */}
-          <Route path="/resultados" element={<Resultadostiempos />} /> 
+          <Route path="/editar-corredor" element={<EditarCorredor />} />
+          <Route path="/resultados" element={<Resultadostiempos />} />
+          <Route path="/eliminar-corredor" element={<EliminarCorredor />} />
+          <Route path="/editar-usuarios" element={<EditarUsuarios />} /> 
+          <Route path="/eliminar-usuario" element={<EliminarUsuario />} /> 
         </Routes>
       </div>
     </Router>

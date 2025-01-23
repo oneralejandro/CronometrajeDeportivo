@@ -7,7 +7,7 @@ const TomaTiempoFin = () => {
   const [eventos, setEventos] = useState([]);
 
   useEffect(() => {
-    // Obtener lista de eventos para el filtro
+    // trae la lista de eventos para el filtro
     axios.get('http://localhost:5000/eventos')
       .then(response => {
         setEventos(response.data);
@@ -25,7 +25,7 @@ const TomaTiempoFin = () => {
     e.preventDefault();
 
     if (selectedEvento) {
-      // Obtener los usuarios que ya tienen hora_inicio registrada
+      // Osolo muestra usuarios que ya tienen hora de inidio tomada
       axios.get(`http://localhost:5000/usuarios-con-hora-inicio?id_evento=${selectedEvento}`)
         .then(response => {
           setUsuariosConHoraInicio(response.data);
@@ -38,9 +38,9 @@ const TomaTiempoFin = () => {
     }
   };
 
-  // Función para manejar la actualización de hora_meta y tiempo_total
+  // actualizaciopn de hora_meta y tiempo_total
   const guardarHoraFin = (idUsuario, horaInicio) => {
-    const horaFin = new Date().toISOString().slice(0, 19).replace('T', ' '); // Formato YYYY-MM-DD HH:MM:SS
+    const horaFin = new Date().toISOString().slice(0, 19).replace('T', ' '); //  YYYY-MM-DD HH:MM:SS
     const tiempoTotal = calcularTiempoTotal(horaInicio, horaFin);
 
     axios.put('http://localhost:5000/actualizar-hora-meta', {
@@ -49,7 +49,7 @@ const TomaTiempoFin = () => {
       tiempo_total: tiempoTotal,
     })
     .then(response => {
-      // Si la actualización es exitosa, actualizamos la lista de usuarios con los nuevos valores
+     
       setUsuariosConHoraInicio(prevUsuarios => {
         return prevUsuarios.map(usuario => 
           usuario.id_usuario === idUsuario 
@@ -57,14 +57,14 @@ const TomaTiempoFin = () => {
             : usuario
         );
       });
-      alert('Hora de llegada a la meta y tiempo fial guardados con éxito');
+      alert('Hora de llegada a la meta y tiempo fial guardados con exito');
     })
     .catch(error => {
-      console.error('Hubo un error al guardar la hora de finalización:', error);
+      console.error('error al guardar la hora de finalizacion:', error);
     });
   };
 
-  // Función para calcular el tiempo total
+  // calcular el tiempo total (funcion)
   const calcularTiempoTotal = (horaInicio, horaFin) => {
     const inicio = new Date(horaInicio);
     const fin = new Date(horaFin);

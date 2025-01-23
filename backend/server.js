@@ -1,14 +1,14 @@
 const express = require('express');
 const mysql = require('mysql2');
-const cors = require('cors');  // Importar CORS
+const cors = require('cors');  //CORS
 
 const app = express();
 const port = 5000;
 
-app.use(cors());  // Habilitar CORS
-app.use(express.json());  // Middleware para manejar el cuerpo en formato JSON
+app.use(cors());  // habilita CORS (habilitado)
+app.use(express.json());  // middleware 
 
-// Configurar la conexión a la base de datos
+// Conexion base de datos
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -24,10 +24,10 @@ db.connect((err) => {
   console.log('Conectado a la base de datos');
 });
 
-// ------------------------------------- Endpoint para niveles de acceso --------------------------------------
+//  endpoint para mostrar niveles de acceso 
 
 app.get('/niveles-acceso', (req, res) => {
-  const query = 'SELECT * FROM niveles_acceso WHERE id_nivel_acceso <> 1'; // Muestra todos los niveles excepto el administrador (id_nivel_acceso = 1)
+  const query = 'SELECT * FROM niveles_acceso WHERE id_nivel_acceso <> 1'; // muestra todos los niveles menos administrador (id_nivel_acceso = 1)
   db.query(query, (err, results) => {
     if (err) {
       res.status(500).send('Error al obtener los niveles de acceso');
@@ -37,12 +37,12 @@ app.get('/niveles-acceso', (req, res) => {
   });
 });
 
-// ------------------------------------- Endpoint para registrar usuario --------------------------------------
+//  endpoint para registrar usuarios 
 
 app.post('/registrar-usuario', (req, res) => {
   const { nombre_usuario, contrasena, nombre_completo, correo, nivel_acceso, rut } = req.body;
 
-  // La consulta SQL ahora incluye el campo `rut`
+  
   const query = 'INSERT INTO usuarios (nombre_usuario, contrasena, nombre_completo, correo, nivel_acceso, rut) VALUES (?, ?, ?, ?, ?, ?)';
 
   db.query(query, [nombre_usuario, contrasena, nombre_completo, correo, nivel_acceso, rut], (err, result) => {
@@ -54,7 +54,7 @@ app.post('/registrar-usuario', (req, res) => {
   });
 });
 
-// ------------------------------------- Endpoint para iniciar sesión --------------------------------------
+// endpoint para iniciar sesion
 
 app.post('/login', (req, res) => {
   const { nombre_usuario, contrasena } = req.body;
@@ -67,25 +67,57 @@ app.post('/login', (req, res) => {
     } else if (result.length === 0) {
       res.status(401).send('Credenciales incorrectas');
     } else {
-      // Enviar los datos del usuario, incluyendo el nivel de acceso
-      const usuario = result[0];
+      
+      const usuario = result[0];// envia los datos incluyendo el nivel de acceso
       res.status(200).json({
         mensaje: 'Inicio de sesión exitoso',
-        nivel_acceso: usuario.nivel_acceso, // Enviar el nivel de acceso
+        nivel_acceso: usuario.nivel_acceso, // envia el nivel de acceso
       });
     }
   });
 });
 
-// ------------------------------------- Endpoint para registrar evento --------------------------------------
+//  endpoint para obtener usuario por rut 
+
+app.get('/api/usuarios/:rut', (req, res) => {
+  const { rut } = req.params;
+  db.query('SELECT * FROM usuarios WHERE rut = ?', [rut], (err, results) => {
+    if (err) return res.status(500).json({ message: 'Error en la base de datos' });
+    if (results.length === 0) return res.status(404).json({ message: 'Usuario no encontrado' });
+    res.json(results[0]);
+  });
+});
+
+// endpoint para actualizar usuarios
+
+app.put('/api/usuarios/:rut', (req, res) => {
+  const { rut } = req.params;
+  const { nombre_completo, correo, nivel_acceso } = req.body;
+
+  // Valida campos
+  if (!nombre_completo || !correo || !nivel_acceso) {
+    return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+  }
+
+  db.query(
+    'UPDATE usuarios SET nombre_completo = ?, correo = ?, nivel_acceso = ? WHERE rut = ?',
+    [nombre_completo, correo, nivel_acceso, rut],
+    (err, results) => {
+      if (err) return res.status(500).json({ message: 'Error en la base de datos' });
+      if (results.affectedRows === 0) return res.status(404).json({ message: 'Usuario no encontrado' });
+      res.json({ message: 'Usuario actualizado correctamente' });
+    }
+  );
+});
+
+//endpoint registra evento
 
 app.post('/guardarEvento', (req, res) => {
   const { nombre_evento, fecha_evento, ubicacion_evento } = req.body;
 
-  // Preparar la consulta SQL para insertar el evento
+  
   const query = 'INSERT INTO eventos (nombre_evento, fecha_evento, ubicacion_evento) VALUES (?, ?, ?)';
 
-  // Ejecutar la consulta
   db.query(query, [nombre_evento, fecha_evento, ubicacion_evento], (err, result) => {
     if (err) {
       console.error('Error al insertar evento:', err);
@@ -95,42 +127,72 @@ app.post('/guardarEvento', (req, res) => {
   });
 });
 
-// ------------------------------------- Endpoint para obtener usuarios y tiempos --------------------------------------
 
-app.get('/usuarios-y-tiempos', (req, res) => {
+
+// endpoint obtiene usuarios con hora de inicio para un evento
+app.get('/usuarios-con-hora-inicio', (req, res) => {
+  const { id_evento } = req.query;
+
   const query = `
-    SELECT u.id_usuario, u.nombre_usuario, u.nombre_completo, t.hora_inicio, t.hora_meta, t.tiempo_total
+    SELECT u.id_usuario, u.nombre_usuario, u.nombre_completo, u.correo, t.hora_inicio
     FROM usuarios u
     JOIN tiempos t ON u.id_usuario = t.id_usuario
+    WHERE t.id_evento = ? AND t.hora_inicio IS NOT NULL
   `;
-  
-  db.query(query, (err, results) => {
+
+  db.query(query, [id_evento], (err, results) => {
     if (err) {
-      res.status(500).send('Error al obtener los usuarios y tiempos');
-    } else {
-      res.json(results);  // Enviar los resultados al frontend
+      return res.status(500).send('Error al obtener los usuarios con hora de inicio');
     }
+    res.json(results);
   });
 });
 
-// ------------------------------------- Endpoint para obtener eventos --------------------------------------
+// Inicia el servidor IMPORTANTE ! NO MODIFICAR
+app.listen(port, () => {
+  console.log(`Servidor ejecutándose en http://localhost:${port}`);
+});
+
+
+// endpoint obtiene eventos 
 
 app.get('/eventos', (req, res) => {
-  const query = 'SELECT id_evento, nombre_evento FROM eventos';  // Seleccionamos los campos necesarios de la tabla eventos
+  const query = 'SELECT id_evento, nombre_evento FROM eventos';  
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).send('Error al obtener los eventos');
     }
-    res.json(results);  // Devolvemos los eventos al frontend
+    res.json(results);  // devuelve  eventos al frontend
   });
 });
 
-// ------------------------------------- Endpoint para registrar participación en el evento --------------------------------------
+//------------------------------endpoint elimina usuarios (no corredores) por rut
+
+app.delete('/api/usuarios/:rut', (req, res) => {
+  const { rut } = req.params;
+
+  
+  db.query('DELETE FROM usuarios WHERE rut = ?', [rut], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el usuario:', err);
+      return res.status(500).json({ message: 'Error al eliminar el usuario' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.json({ message: 'Usuario eliminado correctamente' });
+  });
+});
+
+
+// endpoint para registrar usuario que participa en el evento s
 
 app.post('/registrar-evento', (req, res) => {
-  const { rut, id_evento, estado_participacion, categoria } = req.body;  // Agregar el campo categoria
+  const { rut, id_evento, estado_participacion, categoria } = req.body;  // Agrega el campo categoria
 
-  // Paso 1: Buscar el id_usuario en la tabla usuarios usando el rut
+  // primero busca el id_usuario en la tabla usuarios usando el rut
   const queryBuscarUsuario = 'SELECT id_usuario FROM usuarios WHERE rut = ?';
 
   db.query(queryBuscarUsuario, [rut], (err, result) => {
@@ -138,15 +200,14 @@ app.post('/registrar-evento', (req, res) => {
       return res.status(500).send('Error al buscar el usuario');
     }
 
-    // Verificar si se encontró un usuario con ese rut
     if (result.length === 0) {
       return res.status(404).send('Usuario no encontrado, favor realizar registro en apartado "registro de usuarios"');
     }
 
-    // Paso 2: Obtener el id_usuario
+    // segund obtiene el id_usuario
     const id_usuario = result[0].id_usuario;
 
-    // Paso 3: Insertar en la tabla usuarios_eventos, ahora incluyendo el campo categoria
+    // tercer inserta en la tabla usuarios_eventos incluye el campo categoria
     const queryInsertarEvento = `
       INSERT INTO usuarios_eventos (id_usuario, id_evento, estado_participacion, categoria) 
       VALUES (?, ?, ?, ?)
@@ -162,12 +223,20 @@ app.post('/registrar-evento', (req, res) => {
   });
 });
 
-// ------------------------------------- Endpoint para guardar la hora de inicio --------------------------------------
+
+
+
+
+
+
+
+
+// endpoint para guardar la hora de inicio 
 
 app.post('/guardar-hora', (req, res) => {
   const { id_usuario, hora_inicio, id_evento } = req.body;
 
-  // Paso 1: Obtener la categoría del usuario para el evento
+  //  trae  categoría del usuario para el evento
   const queryCategoria = `
     SELECT categoria
     FROM usuarios_eventos
@@ -184,10 +253,10 @@ app.post('/guardar-hora', (req, res) => {
       return res.status(404).send('No se encontró la categoría para este usuario y evento');
     }
 
-    // Obtener la categoría del resultado
+    // trae categoría del resultado
     const categoria = result[0].categoria;
 
-    // Paso 2: Insertar en la tabla tiempos incluyendo la categoría
+    // inserta datos en la tabla tiempos + la categoría
     const queryInsertarHora = `
       INSERT INTO tiempos (id_evento, id_usuario, hora_inicio, categoria_id)
       VALUES (?, ?, ?, ?)
@@ -203,10 +272,10 @@ app.post('/guardar-hora', (req, res) => {
   });
 });
 
-// ------------------------------------- Endpoint para obtener usuarios_eventos con filtro por id_evento --------------------------------------
+// endpoint obtiene usuarios_eventos con filtro por id_evento 
 
 app.get('/usuarios_eventos', (req, res) => {
-  const { id_evento } = req.query;  // Obtener el id_evento 
+  const { id_evento } = req.query; 
 
   let query = `
     SELECT ue.id_usuario_evento, ue.id_usuario, u.nombre_usuario, u.nombre_completo, u.correo, e.nombre_evento, 
@@ -217,19 +286,28 @@ app.get('/usuarios_eventos', (req, res) => {
   `;
 
   if (id_evento) {
-    query += ' WHERE ue.id_evento = ?';  // Filtro por id_evento si se proporciona
+    query += ' WHERE ue.id_evento = ?';  // filtra por id_evento 
   }
 
   db.query(query, [id_evento], (err, results) => {
     if (err) {
       return res.status(500).send('Error al obtener los usuarios y eventos');
     }
-    res.json(results);  // Enviar los resultados al frontend
+    res.json(results);  //envia resultados
   });
 });
 
 
-// Endpoint para obtener usuarios con hora de inicio para un evento
+
+
+
+
+
+
+
+
+
+//endpoint para obtener usuarios con hora de inicio para un evento
 app.get('/usuarios-con-hora-inicio', (req, res) => {
   const { id_evento } = req.query;
 
@@ -249,12 +327,12 @@ app.get('/usuarios-con-hora-inicio', (req, res) => {
 });
 
 
-// ------------------------------------- Endpoint para actualizar hora_meta y tiempo_total --------------------------------------
+// endpoint q  actualiza hora_meta y tiempo_total 
 
 app.put('/actualizar-hora-meta', (req, res) => {
   const { id_usuario, hora_meta, tiempo_total } = req.body;
 
-  // Consulta para actualizar la hora_meta y tiempo_total en la tabla tiempos
+  // query actualiza  hora_meta y tiempo_total en la tabla tiempos
   const query = `
     UPDATE tiempos 
     SET hora_meta = ?, tiempo_total = ? 
@@ -275,10 +353,3 @@ app.put('/actualizar-hora-meta', (req, res) => {
   });
 });
 
-
-
-
-// Iniciar el servidor
-app.listen(port, () => {
-  console.log(`Servidor ejecutándose en http://localhost:${port}`);
-});

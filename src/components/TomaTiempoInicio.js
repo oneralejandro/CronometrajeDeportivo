@@ -7,13 +7,13 @@ const App = () => {
   const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
-    // Obtener lista de eventos para el filtro
+    // trae eventos para el filtro
     axios.get('http://localhost:5000/eventos')
       .then(response => {
         setEventos(response.data);
       })
       .catch(error => {
-        console.error('Hubo un error al obtener los eventos:', error);
+        console.error(' error al obtener los eventos:', error);
       });
   }, []);
 
@@ -24,7 +24,7 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Obtener los usuarios del evento seleccionado
+    // trae usuarios del evento seleccionado
     axios.get(`http://localhost:5000/usuarios_eventos?id_evento=${selectedEvento}`)
       .then(response => {
         setUsuarios(response.data);
@@ -34,14 +34,14 @@ const App = () => {
       });
   };
 
-  // Función para manejar la grabación de la hora de inicio
+  // manejamos la toma de la hora de inicio
   const guardarHora = (idUsuario) => {
-    const horaInicio = new Date().toISOString().slice(0, 19).replace('T', ' ');  // Formato YYYY-MM-DD HH:MM:SS
+    const horaInicio = new Date().toISOString().slice(0, 19).replace('T', ' '); 
     
     axios.post('http://localhost:5000/guardar-hora', {
       id_usuario: idUsuario,
       hora_inicio: horaInicio,
-      id_evento: selectedEvento,  // ID del evento seleccionado
+      id_evento: selectedEvento,  // id del evento seleccionado
     })
     .then(response => {
       alert('Hora inicio registrada con exito  !');
@@ -78,7 +78,7 @@ const App = () => {
             <th>Fecha Inscripcion</th>
             <th>Estado Participacion</th>
             <th>Categoria</th>
-            <th>Tomar tiempo inicio</th> {/* Nueva columna para el botón */}
+            <th>Tomar tiempo inicio</th> 
           </tr>
         </thead>
         <tbody>
@@ -92,7 +92,7 @@ const App = () => {
               <td>{usuario.estado_participacion}</td>
               <td>{usuario.categoria}</td>
               <td>
-                <button onClick={() => guardarHora(usuario.id_usuario)}>Guardar Hora inicio</button> {/* Botón para guardar la hora */}
+                <button onClick={() => guardarHora(usuario.id_usuario)}>Guardar Hora inicio</button> 
               </td>
             </tr>
           ))}

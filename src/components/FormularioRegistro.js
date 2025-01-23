@@ -9,10 +9,10 @@ const RegistroUsuario = () => {
     nombre_completo: '',
     correo: '',
     nivel_acceso: '',
-    rut: '', // Nuevo campo
+    rut: '', 
   });
 
-  // Cargar los niveles de acceso desde la API
+  // Carga niveles de acceso desde la endpoint
   useEffect(() => {
     axios.get('http://localhost:5000/niveles-acceso')
       .then((response) => {
@@ -23,7 +23,7 @@ const RegistroUsuario = () => {
       });
   }, []);
 
-  // Manejar el cambio de los campos del formulario de registro
+  // Manejo de  cambio de los campos del formulario de registro
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -32,7 +32,7 @@ const RegistroUsuario = () => {
     });
   };
 
-  // Manejar el envío del formulario de registro
+  // envio del formulario de registro
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -45,7 +45,7 @@ const RegistroUsuario = () => {
           nombre_completo: '',
           correo: '',
           nivel_acceso: '',
-          rut: '', // Limpiar el campo rut
+          rut: '', 
         });
       })
       .catch((error) => {

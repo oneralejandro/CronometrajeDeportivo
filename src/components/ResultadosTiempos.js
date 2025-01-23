@@ -1,40 +1,40 @@
-// FormularioResultados.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const FormularioResultados = () => {
-  const [categorias, setCategorias] = useState([]);  // Para almacenar las categorías
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');  // Almacena la categoría seleccionada
-  const [resultados, setResultados] = useState([]);  // Almacena los resultados
-  const [loading, setLoading] = useState(false);  // Para manejar el estado de carga
+  const [categorias, setCategorias] = useState([]);  // almacenalas categorías
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');  // a lmacenacategoria seleccionada
+  const [resultados, setResultados] = useState([]);  // Almacena resultados
+  const [loading, setLoading] = useState(false);  // estado de carga
 
-  // Obtener las categorías del servidor
+  // traE categorias del servidor
   useEffect(() => {
-    axios.get('http://localhost:5000/get-categorias')  // Llamamos al endpoint que devuelve las categorías
+    axios.get('http://localhost:5000/get-categorias')  // Llama endpoint que devuelve las categorias desde el backend
       .then(response => {
-        setCategorias(response.data);  // Guardamos las categorías en el estado
+        setCategorias(response.data);  // Guardaaaaaaa
       })
       .catch(error => {
         console.error('Error al obtener las categorías:', error);
       });
   }, []);
 
-  // Función para manejar la selección de categoría
+  // Funcion selecciona  categoría
   const handleCategoriaChange = (e) => {
     setCategoriaSeleccionada(e.target.value);
   };
 
-  // Función para obtener los resultados filtrados por categoría
+  // obtiene los resultados filtrados por categoria
   const obtenerResultados = () => {
     setLoading(true);
 
-    // Realiza la solicitud GET para obtener los resultados filtrados por categoría
+    // GET para obtener los resultados filtrados por categoria
     axios.get('http://localhost:5000/obtener-resultados', {
       params: { categoria: categoriaSeleccionada }
     })
       .then(response => {
-        setResultados(response.data);  // Almacena los resultados
-        setLoading(false);  // Cambia el estado de carga a falso
+        setResultados(response.data);  
+        setLoading(false);  // Cambia  a falso
       })
       .catch(error => {
         console.error('Error al obtener los resultados:', error);
