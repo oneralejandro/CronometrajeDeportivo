@@ -72,7 +72,7 @@ const Login = () => {
         <FormularioRegistro />
       ) : (
         <div>
-          <h2>Iniciar sesión</h2>
+          <h2>Iniciar sesión test</h2>
           <form onSubmit={handleSubmit}>
             <div>
               <label>Nombre de usuario</label>
