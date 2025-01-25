@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
@@ -14,12 +13,14 @@ import EditarCorredor from './components/EditarCorredor';
 import EliminarCorredor from './components/EliminarCorredor'; 
 import EditarUsuarios from './components/EditarUsuarios'; 
 import EliminarUsuario from './components/EliminarUsuario'; 
+import EventosHistoricos from './components/EventosHistoricos'; // Asegúrate de tener este archivo en la carpeta components
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
+          {/* Rutas principales */}
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboardAdmin" element={<DashboardAdmin />} />
@@ -31,8 +32,11 @@ function App() {
           <Route path="/editar-corredor" element={<EditarCorredor />} />
           <Route path="/resultados" element={<Resultadostiempos />} />
           <Route path="/eliminar-corredor" element={<EliminarCorredor />} />
-          <Route path="/editar-usuarios" element={<EditarUsuarios />} /> 
-          <Route path="/eliminar-usuario" element={<EliminarUsuario />} /> 
+          <Route path="/editar-usuarios" element={<EditarUsuarios />} />
+          <Route path="/eliminar-usuario" element={<EliminarUsuario />} />
+          
+          {/* Nueva ruta para los eventos históricos */}
+          <Route path="/eventos-historicos" element={<EventosHistoricos />} />
         </Routes>
       </div>
     </Router>

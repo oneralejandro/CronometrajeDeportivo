@@ -12,7 +12,7 @@ const DashboardAdmin = () => {
         <button>Agregar Evento</button>
       </Link>
       <Link to="/registro-corredor">
-        <button>Registrar Corredor</button>
+        <button>Registrar Corredor a evento</button>
       </Link>
       <Link to="/editar-corredor">
         <button>Editar Corredor</button>

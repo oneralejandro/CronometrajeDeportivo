@@ -12,6 +12,8 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^4.2.4"
   },
+
+  "homepage": "http://cronometraje.42web.io/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

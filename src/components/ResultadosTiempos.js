@@ -1,44 +1,43 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const FormularioResultados = () => {
-  const [categorias, setCategorias] = useState([]);  // almacenalas categorías
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');  // a lmacenacategoria seleccionada
-  const [resultados, setResultados] = useState([]);  // Almacena resultados
-  const [loading, setLoading] = useState(false);  // estado de carga
+  const [categorias, setCategorias] = useState([]);  // Almacenar las categorías
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');  // Almacenar categoría seleccionada
+  const [resultados, setResultados] = useState([]);  // Almacenar resultados
+  const [loading, setLoading] = useState(false);  // Estado de carga
 
-  // traE categorias del servidor
+  // Trae las categorías desde el backend
   useEffect(() => {
-    axios.get('http://localhost:5000/get-categorias')  // Llama endpoint que devuelve las categorias desde el backend
+    axios.get('http://localhost:5000/get-categorias')  // Llama al endpoint de categorías
       .then(response => {
-        setCategorias(response.data);  // Guardaaaaaaa
+        setCategorias(response.data);  // Almacena las categorías en el estado
       })
       .catch(error => {
         console.error('Error al obtener las categorías:', error);
       });
   }, []);
 
-  // Funcion selecciona  categoría
+  // Maneja el cambio en la selección de categoría
   const handleCategoriaChange = (e) => {
     setCategoriaSeleccionada(e.target.value);
   };
 
-  // obtiene los resultados filtrados por categoria
+  // Obtiene los resultados filtrados por categoría
   const obtenerResultados = () => {
     setLoading(true);
 
-    // GET para obtener los resultados filtrados por categoria
-    axios.get('http://localhost:5000/obtener-resultados', {
-      params: { categoria: categoriaSeleccionada }
+    // Llamada a la API para obtener los resultados filtrados por categoría
+    axios.get('http://localhost:5000/tiempos', {
+      params: { categoria: categoriaSeleccionada }  // Envía la categoría seleccionada
     })
       .then(response => {
-        setResultados(response.data);  
-        setLoading(false);  // Cambia  a falso
+        setResultados(response.data);  // Almacena los resultados
+        setLoading(false);  // Cambia el estado de carga
       })
       .catch(error => {
         console.error('Error al obtener los resultados:', error);
-        setLoading(false);
+        setLoading(false);  // Cambia el estado de carga
       });
   };
 
@@ -46,6 +45,7 @@ const FormularioResultados = () => {
     <div>
       <h1>Filtrar Resultados por Categoría</h1>
 
+      {/* Filtro por categoría */}
       <div>
         <label htmlFor="categoria">Seleccionar Categoría: </label>
         <select
@@ -55,14 +55,16 @@ const FormularioResultados = () => {
         >
           <option value="">Todas</option>
           {categorias.map((categoria, index) => (
-            <option key={index} value={categoria}>{categoria}</option>
+            <option key={index} value={categoria.categoria}>{categoria.categoria}</option> // Aquí accedemos correctamente al campo 'categoria'
           ))}
         </select>
         <button onClick={obtenerResultados}>Ver Resultados</button>
       </div>
 
+      {/* Mostrar estado de carga */}
       {loading && <p>Cargando...</p>}
 
+      {/* Tabla de resultados */}
       <table>
         <thead>
           <tr>

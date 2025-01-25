@@ -1,0 +1,104 @@
+/* Estilo general para el body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Color de fondo suave */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+  }
+  
+  /* Estilo del contenedor principal */
+  .login-container {
+    background-color: #ffffff; /* Fondo blanco para el formulario */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    width: 100%;
+    max-width: 400px; /* Limita el ancho máximo */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Titulo del formulario */
+  .login-container h2 {
+    text-align: center;
+    color: #333333; /* Color de texto oscuro */
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilos para las etiquetas de los campos */
+  label {
+    font-size: 14px;
+    color: #555555;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  /* Estilos para los inputs */
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #4CAF50; /* Verde para resaltar cuando está enfocado */
+  }
+  
+  /* Estilos para el botón de envío */
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  button:disabled {
+    background-color: #ddd; /* Fondo gris cuando el botón está deshabilitado */
+    cursor: not-allowed;
+  }
+  
+  /* Estilos para el mensaje de error */
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  /* Estilos para el enlace de registro */
+  div {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  div span {
+    font-size: 14px;
+    color: #555555;
+  }
+  
+  div button {
+    background: none;
+    color: #4CAF50;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  div button:hover {
+    color: #45a049; /* Color verde más oscuro al pasar el mouse */
+  }
+  

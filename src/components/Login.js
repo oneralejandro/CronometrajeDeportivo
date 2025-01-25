@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import '../Styles/Login.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // useNavigate
+
+
 
 import FormularioRegistro from './FormularioRegistro'; //componente de registro
 
