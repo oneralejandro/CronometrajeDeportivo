@@ -43,6 +43,18 @@ app.get('/niveles-acceso', (req, res) => {
 
 // Otros endpoints según tu código...
 
+
+// Endpoint para verificar la conexión con la base de datos
+app.get('/test-db', (req, res) => {
+  db.query('SELECT 1 + 1 AS result', (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error al conectar con la base de datos', error: err });
+    }
+    res.status(200).json({ message: 'Conexión exitosa a la base de datos', result: results[0].result });
+  });
+});
+
+
 // Inicia el servidor
 app.listen(port, () => {
   console.log(`Servidor ejecutándose en el puerto ${port}`);
