@@ -3,8 +3,6 @@ import '../Styles/Login.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // useNavigate
 
-
-
 import FormularioRegistro from './FormularioRegistro'; //componente de registro
 
 const Login = () => {
@@ -34,9 +32,11 @@ const Login = () => {
     setLoading(true);
     setError('');  // Limpima todos los errores anteriores
 
-    try {
-      const response = await axios.post('http://localhost:5000/login', formData);
+    // Usar la variable de entorno para la URL de la API
+    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000'; // por defecto localhost si no hay variable de entorno
 
+    try {
+      const response = await axios.post(`${baseUrl}/login`, formData);
 
       if (response.data && response.data.nivel_acceso !== undefined) {
         const { nivel_acceso } = response.data; 
@@ -68,7 +68,6 @@ const Login = () => {
   return (
     <div>
       {isRegistering ? (
-  
         <FormularioRegistro />
       ) : (
         <div>
